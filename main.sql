@@ -25,12 +25,55 @@ FROM employees e
 JOIN dept_emps de
 ON (e.emp_no = de.emp_no)
 JOIN departments d
-ON (de.dept_no = d.dept_no)
+ON (de.dept_no = d.dept_no);
 
 -- 5. List first name, last name, and sex for employees whose first name is "Hercules" and last names begin with "B."
 SELECT e.first_name, e.last_name, e.sex
 FROM employees e
-WHERE e.first_name = 'Hercules' AND e.last_name LIKE 'B%'
+WHERE e.first_name = 'Hercules' AND e.last_name LIKE 'B%';
+
+-- 6. List all employees in the Sales department, including their employee number, last name, first name, and department name.
+SELECT e.emp_no, e.first_name, e.last_name, d.dept_name
+FROM employees e
+JOIN dept_emps de
+ON (e.emp_no = de.emp_no)
+JOIN departments d
+ON (de.dept_no = d.dept_no);
+
+-- 7. List all employees in the Sales and Development departments, including their employee number, last name, first name, and department name.
+-- Run this first to create the view for the following query!
+
+-- CREATE VIEW sales_and_dev_emps AS
+-- SELECT e.emp_no, e.last_name, e.first_name
+-- FROM employees e
+-- WHERE emp_no IN (
+-- 	SELECT emp_no
+-- 	FROM dept_emps
+-- 	WHERE dept_no IN (
+-- 		SELECT d.dept_no
+-- 		FROM departments d
+-- 		WHERE d.dept_no = 'd007' OR d.dept_no = 'd005'
+-- 	)
+-- )
+
+SELECT * FROM sales_and_dev_emps ORDER BY emp_no;
+-- View established!
+SELECT e.emp_no, e.last_name, e.first_name, d.dept_name
+FROM sales_and_dev_emps e
+JOIN dept_emps de
+ON (e.emp_no = de.emp_no)
+JOIN departments d
+ON (de.dept_no = d.dept_no)
+WHERE de.dept_no = 'd007' OR de.dept_no = 'd005'
+ORDER BY emp_no;
+
+
+-- 8. In descending order, list the frequency count of employee last names, i.e., how many employees share each last name.
+SELECT COUNT(last_name), last_name 
+FROM employees
+GROUP BY last_name
+ORDER BY COUNT(last_name) DESC;
+
 
 
 
