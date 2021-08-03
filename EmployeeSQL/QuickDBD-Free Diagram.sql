@@ -6,68 +6,82 @@
 -- To reset the sample schema, replace everything with
 -- two dots ('..' - without quotes).
 
-CREATE TABLE "titles" (
-    "title_id" VARCHAR   NOT NULL,
-    "title" VARCHAR   NOT NULL,
-    CONSTRAINT "pk_titles" PRIMARY KEY (
-        "title_id"
-     )
-);
+SET XACT_ABORT ON
 
-CREATE TABLE "employees" (
-    "emp_no" INT   NOT NULL,
-    "emp_title_id" VARCHAR   NOT NULL,
-    "birth_date" VARCHAR   NOT NULL,
-    "first_name" VARCHAR   NOT NULL,
-    "last_name" VARCHAR   NOT NULL,
-    "sex" VARCHAR   NOT NULL,
-    "hire_date" DATE   NOT NULL,
-    CONSTRAINT "pk_employees" PRIMARY KEY (
-        "emp_no"
-     )
-);
+BEGIN TRANSACTION QUICKDBD
 
-CREATE TABLE "departments" (
-    "dept_no" VARCHAR   NOT NULL,
-    "dept_name" VARCHAR   NOT NULL,
-    CONSTRAINT "pk_departments" PRIMARY KEY (
-        "dept_no"
-     )
-);
+CREATE TABLE [titles] (
+    [title_id] VARCHAR  NOT NULL ,
+    [title] VARCHAR  NOT NULL ,
+    CONSTRAINT [PK_titles] PRIMARY KEY CLUSTERED (
+        [title_id] ASC
+    )
+)
 
-CREATE TABLE "dept_emps" (
-    "emp_no" INT   NOT NULL,
-    "dept_no" VARCHAR   NOT NULL,
-    PRIMARY KEY ("dept_no", "emp_no")
-);
+CREATE TABLE [employees] (
+    [emp_no] INT  NOT NULL ,
+    [emp_title_id] VARCHAR  NOT NULL ,
+    [birth_date] VARCHAR  NOT NULL ,
+    [first_name] VARCHAR  NOT NULL ,
+    [last_name] VARCHAR  NOT NULL ,
+    [sex] VARCHAR  NOT NULL ,
+    [hire_date] DATE  NOT NULL ,
+    CONSTRAINT [PK_employees] PRIMARY KEY CLUSTERED (
+        [emp_no] ASC
+    )
+)
 
-CREATE TABLE "dept_managers" (
-    "dept_no" VARCHAR   NOT NULL,
-    "emp_no" INT   NOT NULL
-);
+CREATE TABLE [departments] (
+    [dept_no] INT  NOT NULL ,
+    [dept_name] VARCHAR  NOT NULL ,
+    CONSTRAINT [PK_departments] PRIMARY KEY CLUSTERED (
+        [dept_no] ASC
+    )
+)
 
-CREATE TABLE "salaries" (
-    "emp_no" INT   NOT NULL,
-    "salary" INT   NOT NULL
-);
+CREATE TABLE [dept_emps] (
+    [dept_no] INT  NOT NULL ,
+    [emp_no] INT  NOT NULL 
+)
 
-ALTER TABLE "employees" ADD CONSTRAINT "fk_employees_emp_title_id" FOREIGN KEY("emp_title_id")
-REFERENCES "titles" ("title_id");
+CREATE TABLE [dept_managers] (
+    [dept_no] VARCHAR  NOT NULL ,
+    [emp_no] INT  NOT NULL 
+)
 
-ALTER TABLE "dept_emps" ADD CONSTRAINT "fk_dept_emps_dept_no" FOREIGN KEY("dept_no")
-REFERENCES "departments" ("dept_no");
+CREATE TABLE [salaries] (
+    [emp_no] INT  NOT NULL ,
+    [salary] INT  NOT NULL 
+)
 
-ALTER TABLE "dept_emps" ADD CONSTRAINT "fk_dept_emps_emp_no" FOREIGN KEY("emp_no")
-REFERENCES "employees" ("emp_no");
+ALTER TABLE [employees] WITH CHECK ADD CONSTRAINT [FK_employees_emp_title_id] FOREIGN KEY([emp_title_id])
+REFERENCES [titles] ([title_id])
 
-ALTER TABLE "dept_managers" ADD CONSTRAINT "fk_dept_managers_dept_no" FOREIGN KEY("dept_no")
-REFERENCES "departments" ("dept_no");
+ALTER TABLE [employees] CHECK CONSTRAINT [FK_employees_emp_title_id]
 
-ALTER TABLE "dept_managers" ADD CONSTRAINT "fk_dept_managers_emp_no" FOREIGN KEY("emp_no")
-REFERENCES "employees" ("emp_no");
+ALTER TABLE [dept_emps] WITH CHECK ADD CONSTRAINT [FK_dept_emps_dept_no] FOREIGN KEY([dept_no])
+REFERENCES [departments] ([dept_no])
 
-ALTER TABLE "salaries" ADD CONSTRAINT "fk_salaries_emp_no" FOREIGN KEY("emp_no")
-REFERENCES "employees" ("emp_no");
+ALTER TABLE [dept_emps] CHECK CONSTRAINT [FK_dept_emps_dept_no]
 
+ALTER TABLE [dept_emps] WITH CHECK ADD CONSTRAINT [FK_dept_emps_emp_no] FOREIGN KEY([emp_no])
+REFERENCES [employees] ([emp_no])
 
+ALTER TABLE [dept_emps] CHECK CONSTRAINT [FK_dept_emps_emp_no]
 
+ALTER TABLE [dept_managers] WITH CHECK ADD CONSTRAINT [FK_dept_managers_dept_no] FOREIGN KEY([dept_no])
+REFERENCES [departments] ([dept_no])
+
+ALTER TABLE [dept_managers] CHECK CONSTRAINT [FK_dept_managers_dept_no]
+
+ALTER TABLE [dept_managers] WITH CHECK ADD CONSTRAINT [FK_dept_managers_emp_no] FOREIGN KEY([emp_no])
+REFERENCES [employees] ([emp_no])
+
+ALTER TABLE [dept_managers] CHECK CONSTRAINT [FK_dept_managers_emp_no]
+
+ALTER TABLE [salaries] WITH CHECK ADD CONSTRAINT [FK_salaries_emp_no] FOREIGN KEY([emp_no])
+REFERENCES [employees] ([emp_no])
+
+ALTER TABLE [salaries] CHECK CONSTRAINT [FK_salaries_emp_no]
+
+COMMIT TRANSACTION QUICKDBD
