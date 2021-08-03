@@ -1,2 +1,0 @@
-
-dbpw = "postgres"
